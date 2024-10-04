@@ -6,7 +6,7 @@ import tokenICO from "./TokenICO.json";
 import erc20 from "./ERC20.json";
 
 export const TOKEN_ADDRESS = "";
-export const ERC20_ABO = "";
+export const ERC20_ABI = "";
 
 export const OWNER_ADDRESS = "";
 
@@ -110,14 +110,149 @@ export const CONNECT_WALLET = async () => {
   try {
     if (window.ethereum) return console.log("Please install MetaMask wallet!");
     await handleNetworkSwitch();
-    const account = await window.ethereum.request({ method: "eth_accounts" });
+    const account = await window.ethereum.request({ method: "eth_requestAccounts" });
 
-    if (account.length) {
-      return account[0];
-    } else {
-      console.log("Please install MetaMask & Connect, Reload");
-    }
+    window.location.reload();
+    return account[0];
   } catch (error) {
     console.log(error)
   }
-}
+};
+
+const fetchContract = (address, abi, signer) => new ethers.Contract(address, abi, signer)
+
+export const TOKEN_ICO_CONTRACT = async () => {
+  try {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const signer = provider.getSigner();
+
+    const contract = fetchContract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+    return contract;
+
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+export const ERC20 = async () => {
+  try {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const network = await provider.getNetwork();
+    const signer = await provider.getSigner();
+
+    const userAddress = signer.getAddress();
+    const balance = await contract.balanceOf(userAddress);
+
+    const name = await contract.name();
+    const symbol = await contract.symbol();
+    const supply = await contract.totalSupply();
+    const decimals = await contract.decimals();
+    const address = await contract.address;
+
+    const token = {
+      address: address,
+      name: name,
+      symbol: symbol,
+      decimals: decimals,
+      supply: ethers.utils.formatEther(supply.toString()),
+      balance: ethers.utils.formatEther(balance.toString()),
+      chainId: network.chainId,
+    };
+    console.log(token);
+    return token;
+
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+export const ERC20_CONTRACT = async () => {
+  try {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const signer = provider.getSigner();
+
+    const contract = fetchContract(CONTRACT_ADDRESS, ERC20_ABI, signer);
+
+    return contract;
+
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+export const GET_BALANCE = async () => {
+  try {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const signer = provider.getSigner();
+
+    const neoxBalance = await signer.getBalance();
+
+    return ethers.utils.formatEther(neoxBalance.toString());
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+export const CHECK_ACCOUNT_BALANCE = async (ADDRESS) => {
+  try {
+    const web3modal = new Web3Modal();
+    const connection = await web3modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    const signer = provider.getSigner();
+
+    const neoxBalance = await signer.getBalance(ADDRESS);
+
+    return ethers.utils.formatEther(neoxBalance.toString());
+  } catch (error) {
+    console.log(error)
+  }
+};
+
+export const addTokenToMetaMask = async () => {
+  if (window.ethereum) {
+    const tokenDetails = await ERC20(TOKEN_ADDRESS);
+
+    const tokenDecimals = tokenDecimals?.decimals;
+    const tokenAddress = tokenAddress;
+    const tokenSymbol = tokenDecimals?.symbol;
+    const tokenImage = "";
+
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params:{
+          type: "ERC20",
+          options: {
+            address: tokenAddress,
+            symbol: tokenSymbol,
+            decimals: tokenDecimals,
+            image: tokenImage,
+          }
+        }
+      });
+      if(wasAdded){
+        return "Token added!";
+      } else {
+        return "Token not added";
+      }
+    } catch (error) {
+      return "Failed to add";
+    }
+  } else {
+    return "MetaMask is not installed";
+  }
+};
