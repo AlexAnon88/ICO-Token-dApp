@@ -64,7 +64,7 @@ export const TOKEN_ICO_PROVIDER = ({ childer }) => {
 
     const BUY_TOKEN = async () => {
         try {
-
+            
         } catch (error) {
             console.log(error);
         }
