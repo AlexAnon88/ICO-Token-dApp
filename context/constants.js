@@ -5,15 +5,15 @@ import Web3Modal from "web3modal";
 import tokenICO from "./TokenICO.json";
 import erc20 from "./ERC20.json";
 
-// ERC20.sol is deployed on NeoX T4 Testnet. Check "https://neoxt4scan.ngd.network/tx/0x075fd27c8ea4d2d71142dcb60e938ab3e7b60d1d987333eec0d36a6cd68ad6d9"
-export const TOKEN_ADDRESS = "0xf926C010283a2c6C9e3307D7516B37cabB0B1543";
+// ERC20.sol is deployed on NeoX T4 Testnet, Check "https://neoxt4scan.ngd.network/tx/0xd5367a8200e1c25db4cf0d6ada7c652d8e2f88eb068e23c3fdfe5a464ebe8155"
+export const TOKEN_ADDRESS = "0xB0631F707b2FBb3660A9f757eA3136fb59793435";
 export const ERC20_ABI = erc20.abi;
 
-// My MetaMask account NeoX address
+// My MetaMask account address used to deploy on NeoX T4 Testnet
 export const OWNER_ADDRESS = "0x04381e20A2Bca7Df8D6e173D6fE1726823e956Ee";
 
-// TokenICO.sol is deployed on NeoX T4 Testnet. Check "https://neoxt4scan.ngd.network/tx/0xcbe0f473f00f04fdb64495f45b53784688ed8ca9a398abc1ae5a49e94b22d599"
-export const CONTRACT_ADDRESS = "0x8D55cbFF0DF1ae4342a042eAA30A6f72E6c7AA83";
+// TokenICO.sol is deployed on NeoX T4 Testnet. Check "https://neoxt4scan.ngd.network/tx/0x9cf1247cce8b2bf8625103961619cdfd3ae3683b296e247561a52ee6281ac2b7"
+export const CONTRACT_ADDRESS = "0xeeAc7E7f45165589b30329d2eA2b55a260526917";
 export const CONTRACT_ABI = tokenICO.abi;
 
 const networks = {
