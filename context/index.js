@@ -15,7 +15,7 @@ import {
 } from "./constants";
 
 export const TOKEN_ICO_CONTEXT = React.createContext();
-export const TOKEN_ICO_PROVIDER = ({ childer }) => {
+export const TOKEN_ICO_PROVIDER = ({ children }) => {
     const DAPP_NAME = "TOKEN ICO DAPP";
     const currency = "GAS";
     const network = "Neox T4";
@@ -31,7 +31,7 @@ export const TOKEN_ICO_PROVIDER = ({ childer }) => {
     const TOKEN_ICO = async () => {
         try {
             const address = await CHECK_WALLET_CONNECTED();
-            if(address){
+            if (address) {
                 setLoader(true);
                 setAccount(address);
 
@@ -40,7 +40,7 @@ export const TOKEN_ICO_PROVIDER = ({ childer }) => {
                 const tokenDetails = await contract.getTokenDetails();
                 const contractOwner = await contract.owner();
                 const soldTokens = await contract.soldTokens();
-            
+
                 const ethBal = await GET_BALANCE();
                 const token = {
                     tokenBal: ethers.utils.formatEther(tokenDetails.balance.toString()),
@@ -59,27 +59,91 @@ export const TOKEN_ICO_PROVIDER = ({ childer }) => {
             }
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
     }
 
-    const BUY_TOKEN = async () => {
+    const BUY_TOKEN = async (amount) => {
         try {
-            
+            setLoader(true);
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+
+                const tokenDetails = await contract.getTokenDetails();
+
+                const availableToken = ethers.utils.formatEther(tokenDetails.balance.toString());
+
+                if (availableToken > 1) {
+                    const price = ethers.utils.formatEther(tokenDetails.tokenPrice.toString());
+
+                    const payAmount = ethers.utils.parseUnits(price.toString(), "ether");
+
+                    const transaction = await contract.buyToken(Number(amount), {
+                        value: payAmount.toString(),
+                        gasLimit: ethers.utils.hexlify(8000000)
+                    });
+
+                    await transaction.wait();
+                    setLoader(false);
+                    notifySuccess("Transaction completed successfully!");
+                    window.location.reload();
+                }
+            }
+
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
     }
 
     const TOKEN_WITHDRAW = async () => {
         try {
-            
+            setLoader(true);
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+
+                const tokenDetails = await contract.getTokenDetails();
+
+                const availableToken = ethers.utils.formatEther(tokenDetails.balance.toString());
+
+                if (availableToken > 1) {
+
+                    const transaction = await contract.withdrawAllTokens();
+
+                    await transaction.wait();
+                    setLoader(false);
+                    window.location.reload();
+
+                }
+            }
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
     }
-    const UPDATE_TOKEN = async () => {
+
+    const UPDATE_TOKEN = async (_address) => {
         try {
-            
+            setLoader(true);
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+
+                const transaction = await contract.updateToken(_address);
+
+                await transaction.wait();
+                setLoader(false);
+                notifySuccess("Transaction completed successfully!");
+                window.location.reload();
+            }
         } catch (error) {
             console.log(error);
         }
@@ -87,33 +151,131 @@ export const TOKEN_ICO_PROVIDER = ({ childer }) => {
 
     const UPDATE_TOKEN_PRICE = async () => {
         try {
-            
+            setLoader(true);
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+                const payAmount = ethers.utils.parseUnits(price.toString(), "ether")
+
+                const transaction = await contract.updateTokenSalePrice(payAmount);
+
+                await transaction.wait();
+                setLoader(false);
+                notifySuccess("Transaction completed successfully!");
+                window.location.reload();
+            }
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
     }
-    
-    const DONATE = async () => {
+
+    const DONATE = async (AMOUNT) => {
         try {
-            
+            setLoader(true);
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+                const payAmount = ethers.utils.parseUnits(AMOUNT.toString(), "ether")
+
+                const transaction = await contract.transferToOwner(payAmount, {
+                    value: payAmount.toString(),
+                    gasLimit: ethers.utils.hexlify(8000000),
+                });
+
+                await transaction.wait();
+                setLoader(false);
+                notifySuccess("Transaction completed successfully!");
+                window.location.reload();
+            }
         } catch (error) {
             console.log(error);
         }
     }
 
-    const TRANSFER_ETHER = async () => {
+    const TRANSFER_ETHER = async (transfer) => {
         try {
-            
+            setLoader(true);
+
+            const { _receiver, _amount } = transfer;
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await TOKEN_ICO_CONTRACT();
+                const payAmount = ethers.utils.parseUnits(_amount.toString(), "ether")
+
+                const transaction = await contract.transferEther(
+                    _receiver,
+                    payAmount, {
+                    value: payAmount.toString(),
+                    gasLimit: ethers.utils.hexlify(8000000),
+                });
+
+                await transaction.wait();
+                setLoader(false);
+                notifySuccess("Transaction completed successfully!");
+                window.location.reload();
+            }
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
     }
 
-    const TRANSFER_TOKEN = async () => {
+    const TRANSFER_TOKEN = async (transfer) => {
         try {
-            
+            setLoader(true);
+
+            const { _tokenAddress, _sendTo, _amount } = transfer;
+            const address = await CHECK_WALLET_CONNECTED();
+
+            if (address) {
+                const contract = await ERC20_CONTRACT(_tokenAddress);
+                const payAmount = ethers.utils.parseUnits(_amount.toString(), "ether")
+
+                const transaction = await contract.transfer(_sendTo,
+                    payAmount, {
+                    gasLimit: ethers.utils.hexlify(8000000),
+                });
+
+                await transaction.wait();
+                setLoader(false);
+                notifySuccess("Transaction completed successfully!");
+                window.location.reload();
+            }
         } catch (error) {
             console.log(error);
+            notifyError("Error, try again");
+            setLoader(false);
         }
-    }
+    };
+
+    return (
+        <TOKEN_ICO_CONTEXT.Provider value={{
+            TOKEN_ICO,
+            BUY_TOKEN,
+            TRANSFER_ETHER,
+            DONATE,
+            UPDATE_TOKEN,
+            UPDATE_TOKEN_PRICE,
+            TOKEN_WITHDRAW,
+            TRANSFER_TOKEN,
+            CONNECT_WALLET,
+            ERC20,
+            CHECK_ACCOUNT_BALANCE,
+            setAccount,
+            setLoader,
+            addTokenToMetaMask,
+            TOKEN_ADDRESS,
+            loader,
+            account,
+            currency,
+        }}>
+            {children}
+        </TOKEN_ICO_CONTEXT.Provider>
+    )
 };
