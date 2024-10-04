@@ -5,12 +5,15 @@ import Web3Modal from "web3modal";
 import tokenICO from "./TokenICO.json";
 import erc20 from "./ERC20.json";
 
-export const TOKEN_ADDRESS = "";
-export const ERC20_ABI = "";
+// ERC20.sol is deployed on NeoX T4 Testnet. Check "https://neoxt4scan.ngd.network/tx/0x075fd27c8ea4d2d71142dcb60e938ab3e7b60d1d987333eec0d36a6cd68ad6d9"
+export const TOKEN_ADDRESS = "0xf926C010283a2c6C9e3307D7516B37cabB0B1543";
+export const ERC20_ABI = erc20.abi;
 
-export const OWNER_ADDRESS = "";
+// My MetaMask account NeoX address
+export const OWNER_ADDRESS = "0x04381e20A2Bca7Df8D6e173D6fE1726823e956Ee";
 
-export const CONTRACT_ADDRESS = "";
+// TokenICO.sol is deployed on NeoX T4 Testnet. Check "https://neoxt4scan.ngd.network/tx/0xcbe0f473f00f04fdb64495f45b53784688ed8ca9a398abc1ae5a49e94b22d599"
+export const CONTRACT_ADDRESS = "0x8D55cbFF0DF1ae4342a042eAA30A6f72E6c7AA83";
 export const CONTRACT_ABI = tokenICO.abi;
 
 const networks = {
