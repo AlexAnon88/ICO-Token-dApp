@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@formspree/react": "^2.5.1",
-    "@next/font": "14.0.3",
     "@openzeppelin/contracts": "^5.0.2",
     "axios": "^0.27.2",
     "dotenv": "^16.0.0",
